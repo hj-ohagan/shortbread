@@ -27,6 +27,7 @@ def shortbread(startWord, endWord, words):
 if __name__ == "__main__":
     import argparse
     import time
+    from statistics import mean, stdev
     parser = argparse.ArgumentParser()
     parser.add_argument('--start', type=str, default='short')
     parser.add_argument('--end', type=str, default='bread')
@@ -39,7 +40,11 @@ if __name__ == "__main__":
     end = time.time()
     print(str((end-start) * 1000) + ' ms (Including Read words into container)' )
     print(str((end-start2) * 1000) + ' ms (Bidirectional BFS only)' )
-    start = time.time()
-    for i in range(100): shortbread(args.start, args.end, words)
-    end = time.time()
-    print(str((end-start) * 10) + ' ms (avg over 100 iterations)' )
+    start, end = [], []
+    for i in range(100):
+        start.append(time.time())
+        shortbread(args.start, args.end, words)
+        end.append(time.time())
+    times = [e-s for s,e in zip(start,end)]
+    print(str(mean(times)*1000) + '+/-' + str(stdev(times)*1000) +
+        ' ms (Bidirectional BFS only avg over 100 iterations)')
